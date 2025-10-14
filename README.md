@@ -73,7 +73,6 @@ This project uses Spring Security’s built-in session-based CSRF protection. Al
 Custom `error.html` and a global `@ControllerAdvice` handler are implemented to catch OAuth2 and generic exceptions gracefully.
 
 ## ⏱️ Project Flow
-
 User visits `/` → sees **Login with Google / GitHub**  
 After authentication → redirected to `/profile`  
 User edits **Display Name** or **Bio** → clicks **Save Changes**  
