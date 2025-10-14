@@ -32,8 +32,8 @@ The app uses **Spring Security**, **Thymeleaf**, and an **H2 in-memory database*
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
+git clone https://github.com/berna-ahito/oauth2-integration.git
+cd oauth2-integration
 ```
 
 ### 3️⃣ Run the Application
