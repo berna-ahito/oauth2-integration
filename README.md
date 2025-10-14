@@ -79,23 +79,23 @@ Clicking **Logout** ends the session and returns to home with a success message
 ### 🧭 a) High-Level Flow
 ```mermaid
 flowchart LR
-  A[Browser] -->|GET /| B[HomeController (Spring MVC)]
-  B --> C[Login Buttons]
-  A -->|/oauth2/authorization/google| D[Spring Security OAuth2 Client]
+  A[Browser] -->|GET /| B["HomeController - Spring MVC"]
+  B --> C["Login Buttons"]
+  A -->|/oauth2/authorization/google| D["Spring Security OAuth2 Client"]
   A -->|/oauth2/authorization/github| D
-  D -->|Auth Code Flow| E[Google or GitHub]
-  E --> D --> F[OAuth2 Login Filter]
-  F --> G[SecurityContext<br/>Stores Authenticated Principal]
-  G -->|GET /profile| H[ProfileController]
-  H --> I[Service + JPA Layer]
-  I --> J[(H2 Database)]
-  H -->|View| K[Thymeleaf Templates]
+  D -->|Auth Code Flow| E["Google or GitHub"]
+  E --> D --> F["OAuth2 Login Filter"]
+  F --> G["SecurityContext (Authenticated Principal)"]
+  G -->|GET /profile| H["ProfileController"]
+  H --> I["Service + JPA Layer"]
+  I --> J["H2 Database"]
+  H -->|View| K["Thymeleaf Templates"]
 
 ### 🧩 b) Module / Layer Diagram
 graph TD
-  UI[Thymeleaf Views<br/>home.html • profile.html • error.html] --> MVC[Controllers<br/>HomeController • ProfileController]
-  MVC --> SEC[Spring Security Config]
-  MVC --> SVC[Profile / User Service]
-  SVC --> JPA[Spring Data JPA Repository]
-  JPA --> DB[(H2 In-Memory Database)]
-  SEC --> OIDC[OAuth2 Client<br/>(Google • GitHub)]
+  UI["Thymeleaf Views: home.html, profile.html, error.html"] --> MVC["Controllers: HomeController, ProfileController"]
+  MVC --> SEC["Spring Security Config"]
+  MVC --> SVC["Profile / User Service"]
+  SVC --> JPA["Spring Data JPA Repository"]
+  JPA --> DB["H2 In-Memory Database"]
+  SEC --> OIDC["OAuth2 Client: Google & GitHub"]
