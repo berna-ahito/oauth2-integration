@@ -45,9 +45,16 @@ public class AppOAuth2UserService extends DefaultOAuth2UserService {
         var link = providers.findByProviderAndProviderUserId(provider, providerUserId).orElse(null);
         if (link != null) {
             var u = link.getUser();
-            if (displayName != null && !displayName.isBlank()) u.setDisplayName(displayName);
-            if (avatarUrl != null) u.setAvatarUrl(avatarUrl);
-            if (providerEmail != null && !providerEmail.isBlank()) u.setEmail(providerEmail);
+            if ((u.getDisplayName() == null || u.getDisplayName().isBlank())
+                    && displayName != null && !displayName.isBlank()) {
+                u.setDisplayName(displayName);
+            }
+            if (avatarUrl != null && !avatarUrl.isBlank()) {
+                u.setAvatarUrl(avatarUrl);
+            }
+            if (providerEmail != null && !providerEmail.isBlank() && !providerEmail.equals(u.getEmail())) {
+                u.setEmail(providerEmail);
+            }
             users.save(u);
             return;
         }
