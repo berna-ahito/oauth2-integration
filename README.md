@@ -90,7 +90,9 @@ flowchart LR
   H --> I["Service + JPA Layer"]
   I --> J["H2 Database"]
   H -->|View| K["Thymeleaf Templates"]
-
+```
+### 🧩 b) Module / Layer Diagram
+```mermaid
 graph TD
   UI["Thymeleaf Views: home.html, profile.html, error.html"] --> MVC["Controllers: HomeController, ProfileController"]
   MVC --> SEC["Spring Security Config"]
@@ -98,3 +100,4 @@ graph TD
   SVC --> JPA["Spring Data JPA Repository"]
   JPA --> DB["H2 In-Memory Database"]
   SEC --> OIDC["OAuth2 Client: Google & GitHub"]
+```
