@@ -66,6 +66,12 @@ Password: (leave blank)
 
 ✅ = Requires Login  ❌ = Public Access
 
+**Security & CSRF Protection:**  
+This project uses Spring Security’s built-in session-based CSRF protection. All POST forms (Profile and Logout) include a CSRF token automatically provided by Thymeleaf.
+
+**Error Handling:**  
+Custom `error.html` and a global `@ControllerAdvice` handler are implemented to catch OAuth2 and generic exceptions gracefully.
+
 ## ⏱️ Project Flow
 
 User visits `/` → sees **Login with Google / GitHub**  
