@@ -91,7 +91,7 @@ flowchart LR
   I --> J["H2 Database"]
   H -->|View| K["Thymeleaf Templates"]
 
-### 🧩 b) Module / Layer Diagram
+🧩 b) Module / Layer Diagram
 graph TD
   UI["Thymeleaf Views: home.html, profile.html, error.html"] --> MVC["Controllers: HomeController, ProfileController"]
   MVC --> SEC["Spring Security Config"]
