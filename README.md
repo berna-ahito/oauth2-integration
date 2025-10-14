@@ -77,3 +77,26 @@ User edits Display Name or Bio → clicks Save Changes
 Changes persist in H2 database
 
 Clicking Logout ends session and returns to home with a success message
+
+### a) High-level flow
+flowchart LR
+  A[Browser] -->|GET /| B[Spring MVC (HomeController)]
+  B --> C[Login Buttons]
+  A -->|/oauth2/authorization/google| D[Spring Security OAuth2 Client]
+  A -->|/oauth2/authorization/github| D
+  D -->|Auth Code Flow| E[Google/GitHub]
+  E --> D --> F[OAuth2LoginAuthenticationFilter]
+  F --> G[SecurityContext holds Principal]
+  G -->|GET /profile| H[ProfileController]
+  H --> I[Service + JPA]
+  I --> J[(H2 DB)]
+  H -->|View| K[Thymeleaf templates]
+
+### b) Module/Layer diagram
+graph TD
+  UI[Thymeleaf Views<br/>home.html, profile.html, error.html] --> MVC[Controllers]
+  MVC[HomeController, ProfileController] --> SEC[Spring Security Config]
+  MVC --> SVC[Profile/User Services]
+  SVC --> JPA[Spring Data JPA Repositories]
+  JPA --> DB[(H2 In-Memory)]
+  SEC --> OIDC[OAuth2 Client (Google, GitHub)]
