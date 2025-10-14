@@ -66,37 +66,38 @@ Password: (leave blank)
 
 ✅ = Requires Login  ❌ = Public Access
 
-### 🧭 Project Flow
+## ⏱️ Project Flow
 
-User visits / → sees Login with Google / GitHub
+User visits `/` → sees **Login with Google / GitHub**  
+After authentication → redirected to `/profile`  
+User edits **Display Name** or **Bio** → clicks **Save Changes**  
+Changes persist in the **H2 database**  
+Clicking **Logout** ends the session and returns to home with a success message  
 
-After authentication → redirected to /profile
+---
 
-User edits Display Name or Bio → clicks Save Changes
-
-Changes persist in H2 database
-
-Clicking Logout ends session and returns to home with a success message
-
-### a) High-level flow
+### 🧭 a) High-level Flow
+```mermaid
 flowchart LR
   A[Browser] -->|GET /| B[Spring MVC (HomeController)]
   B --> C[Login Buttons]
   A -->|/oauth2/authorization/google| D[Spring Security OAuth2 Client]
   A -->|/oauth2/authorization/github| D
-  D -->|Auth Code Flow| E[Google/GitHub]
+  D -->|Auth Code Flow| E[Google / GitHub]
   E --> D --> F[OAuth2LoginAuthenticationFilter]
   F --> G[SecurityContext holds Principal]
   G -->|GET /profile| H[ProfileController]
   H --> I[Service + JPA]
-  I --> J[(H2 DB)]
-  H -->|View| K[Thymeleaf templates]
-
-### b) Module/Layer diagram
+  I --> J[(H2 Database)]
+  H -->|View| K[Thymeleaf Templates]
+```
+### 🧩 b) Module / Layer Diagram
+```mermaid
 graph TD
-  UI[Thymeleaf Views<br/>home.html, profile.html, error.html] --> MVC[Controllers]
-  MVC[HomeController, ProfileController] --> SEC[Spring Security Config]
+  UI[Thymeleaf Views<br/>home.html, profile.html, error.html] --> MVC[Controllers<br/>HomeController, ProfileController]
+  MVC --> SEC[Spring Security Config]
   MVC --> SVC[Profile/User Services]
   SVC --> JPA[Spring Data JPA Repositories]
-  JPA --> DB[(H2 In-Memory)]
+  JPA --> DB[(H2 In-Memory Database)]
   SEC --> OIDC[OAuth2 Client (Google, GitHub)]
+```
