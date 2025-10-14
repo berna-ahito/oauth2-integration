@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="nav">
+    <div class="brand">OAuth2 Integration</div>
+    <div class="row" th:if="${loggedIn}">
+        <a href="/" class="btn btn-outline" th:href="@{/}">Home</a>
+        <form th:action="@{/logout}" method="post" style="margin:0">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="shell">
+    <div class="card">
+
+        <!-- logout success (clean URL via session flag) -->
+        <div th:if="${logout}" class="alert-info">
+            You’ve been logged out successfully.
+        </div>
+
+        <span class="badge">
+          <svg viewBox="0 0 24 24" fill="#1e40af" width="16" height="16"
+               style="margin-right:6px;vertical-align:-2px">
+              <path d="M12 2 2 7l10 5 10-5-10-5Zm0 7L2 4v13l10 5 10-5V4l-10 5Z"/>
+          </svg>
+          Secure OAuth 2.0
+        </span>
+
+        <h1 class="h1">Welcome</h1>
+        <p class="p-muted">Sign in using a provider below to continue.</p>
+
+        <div th:unless="${loggedIn}" class="oauth-buttons">
+            <!-- Google -->
+            <a class="oauth-btn" href="/oauth2/authorization/google" aria-label="Continue with Google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+                Continue with Google
+            </a>
+
+            <!-- GitHub -->
+            <a class="oauth-btn github" href="/oauth2/authorization/github" aria-label="Continue with GitHub">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub"/>
+                Continue with GitHub
+            </a>
+        </div>
+
+        <div th:if="${loggedIn}" class="mt-24">
+            <a href="/profile" class="btn btn-primary">Go to Profile</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

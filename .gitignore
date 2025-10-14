@@ -1,24 +1,76 @@
-# Compiled class file
-*.class
+# ----------------------------
+# Core build artifacts
+# ----------------------------
+target/
+build/
 
-# Log file
+# Keep the Maven Wrapper
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# ----------------------------
+# IDE / project files
+# ----------------------------
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.project
+.classpath
+.settings/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+
+# ----------------------------
+# Logs / temp
+# ----------------------------
+logs/
 *.log
+hs_err_pid*
+replay_pid*
+*.pid
 
-# BlueJ files
-*.ctxt
+# ----------------------------
+# OS junk
+# ----------------------------
+.DS_Store
+Thumbs.db
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
+# ----------------------------
+# Archives / packages
+# ----------------------------
 *.zip
 *.tar.gz
 *.rar
+*.7z
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# ----------------------------
+# H2 (file mode artifacts)
+# (your app uses in-memory, but ignore just in case)
+# ----------------------------
+*.mv.db
+*.h2.db
+
+# ----------------------------
+# Local env / overrides (optional)
+# ----------------------------
+*.env
+application-local.properties
+application-local.yml
+
+
