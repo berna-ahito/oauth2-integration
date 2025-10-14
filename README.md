@@ -11,7 +11,7 @@ The app uses **Spring Security**, **Thymeleaf**, and an **H2 in-memory database*
 -  Authenticated profile page with user info
 -  Edit and save `Display Name` and `Bio`
 -  Secure logout that redirects back to home
-- 🧠Persistent data using **H2 database**
+- Persistent data using **H2 database**
 -  Clean and modern UI (navy blue theme)
 
 ---
