@@ -1,7 +1,7 @@
 # OAuth2 Integration (Google & GitHub)
 
-A Spring Boot web application that implements **OAuth2 login** using **Google** and **GitHub** providers.  
-Users can sign in securely,  view and edit their profile (Display Name and Bio), and log out safely.  
+A **full-stack web application** that implements secure OAuth2 login using **Google** and **GitHub**.  
+Users can sign in securely, view and edit their profile (Display Name and Bio), and log out safely.  
 
 The project is divided into two parts:
 - 🧩 **Backend** – Spring Boot 3 (OAuth2 + H2 in-memory DB)
@@ -9,17 +9,17 @@ The project is divided into two parts:
 ---
 ## 🚀 Features
 
-### 🔐 Authentication
+### Authentication
 - OAuth2 login via **Google** and **GitHub**
 - Secure session management with Spring Security
 - CSRF protection enabled by default
 
-### 👤 User Management
+### User Management
 - Authenticated profile page (Display Name, Bio, Avatar, Email)
 - Edit and save user details in database
 - Automatic redirect and logout flow
 
-### 💅 Frontend
+### Frontend
 - Modern React + Vite app
 - Responsive UI for login and profile pages
 - Modular component-based structure
@@ -47,7 +47,7 @@ cd oauth2-integration
 ```
 
 ### 🧩 Backend Setup (Spring Boot)
-#### 📦 Install Dependencies
+📦 Install Dependencies
 ```bash
 cd backend
 mvn clean install
@@ -138,6 +138,3 @@ graph TD
   API --> SEC["Spring Security OAuth2"]
   API --> DB["H2 Database (In-Memory)"]
 ```
-
-
-  SEC --> OIDC["OAuth2 Client: Google & GitHub"]```
