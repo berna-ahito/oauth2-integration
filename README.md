@@ -127,7 +127,9 @@ Clicking **Logout** ends the session and returns to home with a success message
 
 ---
 
-### 🧭 a) OAuth2 Flow
+## 🧩 High-Level Diagrams
+
+### a) OAuth2 Flow
 ```mermaid
 flowchart LR
   A[User Browser] -->|GET /| B["React Frontend (Login Page)"]
@@ -138,7 +140,7 @@ flowchart LR
   F -->|REST API| G["UserController"]
   G --> H["H2 In-Memory Database"]
 ```
-### 🧩 b) Module / Layer Diagram
+### b) Module / Layer Diagram
 ```mermaid
 graph TD
   FRONT["React Frontend (Vite)"] --> API["Spring Boot REST API"]
