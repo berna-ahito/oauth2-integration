@@ -1,18 +1,28 @@
 # OAuth2 Integration (Google & GitHub)
 
 A Spring Boot web application that implements **OAuth2 login** using **Google** and **GitHub** providers.  
-Users can sign in securely, view their profile, and update personal details such as **Display Name** and **Bio**.  
-The app uses **Spring Security**, **Thymeleaf**, and an **H2 in-memory database**.
+Users can sign in securely,  view and edit their profile (Display Name and Bio), and log out safely.  
 
+The project is divided into two parts:
+- 🧩 **Backend** – Spring Boot 3 (OAuth2 + H2 in-memory DB)
+- 💻 **Frontend** – React (Vite) for a modern, responsive UI  
 ---
 ## 🚀 Features
 
--  OAuth2 login via **Google** and **GitHub**
--  Authenticated profile page with user info
--  Edit and save `Display Name` and `Bio`
--  Secure logout that redirects back to home
-- Persistent data using **H2 database**
--  Clean and modern UI (navy blue theme)
+### 🔐 Authentication
+- OAuth2 login via **Google** and **GitHub**
+- Secure session management with Spring Security
+- CSRF protection enabled by default
+
+### 👤 User Management
+- Authenticated profile page (Display Name, Bio, Avatar, Email)
+- Edit and save user details in database
+- Automatic redirect and logout flow
+
+### 💅 Frontend
+- Modern React + Vite app
+- Responsive UI for login and profile pages
+- Modular component-based structure
 
 ---
 
@@ -20,11 +30,11 @@ The app uses **Spring Security**, **Thymeleaf**, and an **H2 in-memory database*
 
 | Layer | Technology |
 |-------|-------------|
-| Backend | Spring Boot 3 (Java) |
-| Security | Spring Security (OAuth2 Client) |
-| View | Thymeleaf + HTML + CSS |
-| Database | H2 (in-memory) |
-| Build Tool | Maven |
+| **Frontend** | React (Vite, JavaScript ES6+) |
+| **Backend** | Spring Boot 3 (Java 17+) |
+| **Security** | Spring Security (OAuth2 Client) |
+| **Database** | H2 (in-memory) |
+| **Build Tools** | Maven (backend), npm (frontend) |
 
 ---
 
@@ -36,7 +46,23 @@ git clone https://github.com/berna-ahito/oauth2-integration.git
 cd oauth2-integration
 ```
 
-### 3️⃣ Run the Application
+### 🧩 Backend Setup (Spring Boot)
+#### 📦 Install Dependencies
+```bash
+cd backend
+mvn clean install
+```
+
+### ⚙️ Configure OAuth2 Credentials
+Create a .env file (or set Run/Debug configuration in IntelliJ) with your client IDs and secrets:
+```bash
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+```
+
+### 3️⃣ Run the Backend
 ```
 mvn spring-boot:run
 ```
@@ -44,17 +70,30 @@ mvn spring-boot:run
 Then open your browser and go to:
 👉 http://localhost:8080
 
-4️⃣ Access the H2 Database (optional)
+### 4️⃣ Access the H2 Database (optional)
 
 Go to: http://localhost:8080/h2-console
 ```
 JDBC URL: jdbc:h2:mem:testdb
-
 Username: sa
-
 Password: (leave blank)
 ```
-## 🌐 Endpoints Summary
+
+### 💻 Frontend Setup (React + Vite)
+📦 Install Dependencies
+```bash
+cd ../frontend
+npm install
+```
+### ▶️ Run the Frontend
+```bash
+npm run dev
+```
+Access the React app at:
+👉 http://localhost:5173
+
+---
+## 🌐 Backend Endpoints Summary
 
 | HTTP Method | Endpoint | Description | Authentication Required |
 |--------------|-----------|--------------|--------------------------|
@@ -81,28 +120,24 @@ Clicking **Logout** ends the session and returns to home with a success message
 
 ---
 
-### 🧭 a) High-Level Flow
+### 🧭 a) OAuth2 Flow
 ```mermaid
 flowchart LR
-  A[Browser] -->|GET /| B["HomeController - Spring MVC"]
-  B --> C["Login Buttons"]
-  A -->|/oauth2/authorization/google| D["Spring Security OAuth2 Client"]
-  A -->|/oauth2/authorization/github| D
-  D -->|Auth Code Flow| E["Google or GitHub"]
-  E --> D --> F["OAuth2 Login Filter"]
-  F --> G["SecurityContext (Authenticated Principal)"]
-  G -->|GET /profile| H["ProfileController"]
-  H --> I["Service + JPA Layer"]
-  I --> J["H2 Database"]
-  H -->|View| K["Thymeleaf Templates"]
+  A[User Browser] -->|GET /| B["React Frontend (Login Page)"]
+  B -->|Login with Google/GitHub| C["Spring Security OAuth2 Client"]
+  C -->|Authorization Code Flow| D["Google/GitHub Provider"]
+  D --> C --> E["Spring Security Filter Chain"]
+  E --> F["Authenticated Principal (User)"]
+  F -->|REST API| G["UserController"]
+  G --> H["H2 In-Memory Database"]
 ```
 ### 🧩 b) Module / Layer Diagram
 ```mermaid
 graph TD
-  UI["Thymeleaf Views: home.html, profile.html, error.html"] --> MVC["Controllers: HomeController, ProfileController"]
-  MVC --> SEC["Spring Security Config"]
-  MVC --> SVC["Profile / User Service"]
-  SVC --> JPA["Spring Data JPA Repository"]
-  JPA --> DB["H2 In-Memory Database"]
-  SEC --> OIDC["OAuth2 Client: Google & GitHub"]
+  FRONT["React Frontend (Vite)"] --> API["Spring Boot REST API"]
+  API --> SEC["Spring Security OAuth2"]
+  API --> DB["H2 Database (In-Memory)"]
 ```
+
+
+  SEC --> OIDC["OAuth2 Client: Google & GitHub"]```
