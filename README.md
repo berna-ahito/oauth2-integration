@@ -13,6 +13,7 @@ The project is divided into two parts:
 - OAuth2 login via **Google** and **GitHub**
 - Secure session management with Spring Security
 - CSRF protection enabled by default
+- First successful OAuth2 login creates a local `User` and `AuthProvider` record; subsequent logins map to the same user via provider ID/email.
 
 ### User Management
 - Authenticated profile page (Display Name, Bio, Avatar, Email)
@@ -33,8 +34,17 @@ The project is divided into two parts:
 | **Frontend** | React (Vite, JavaScript ES6+) |
 | **Backend** | Spring Boot 3 (Java 17+) |
 | **Security** | Spring Security (OAuth2 Client) |
-| **Database** | H2 (in-memory) |
+| **Database** | H2 (in-memory, for development; switchable to MySQL/PostgreSQL for production) |
 | **Build Tools** | Maven (backend), npm (frontend) |
+
+---
+
+## 🗄️ Data Model (JPA)
+
+- **User**: `id`, `email`, `displayName`, `avatarUrl`, `bio`, `createdAt`, `updatedAt`  
+- **AuthProvider**: `id`, `userId` (→ User), `provider` (`GOOGLE` | `GITHUB`), `providerUserId`, `providerEmail`
+
+Persisted via **Spring Data JPA** to **H2 (in-memory)** for development.
 
 ---
 
@@ -54,7 +64,7 @@ mvn clean install
 ```
 
 ### ⚙️ Configure OAuth2 Credentials
-Create a .env file (or set Run/Debug configuration in IntelliJ) with your client IDs and secrets:
+Set the following **environment variables** (via your OS or IntelliJ Run/Debug configuration), or map equivalent values directly in `application.properties`:
 ```bash
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
@@ -99,6 +109,9 @@ npm run dev
 Access the React app at:
 👉 http://localhost:5173
 
+**CORS (development):**  
+The backend enables CORS for `http://localhost:5173` so the Vite React dev server can communicate with the Spring Boot API during development.
+
 ---
 ## 🌐 Backend Endpoints Summary
 
@@ -113,7 +126,7 @@ Access the React app at:
 ✅ = Requires Login  ❌ = Public Access
 
 **Security & CSRF Protection:**  
-This project uses Spring Security’s built-in session-based CSRF protection. All POST forms (Profile and Logout) include a CSRF token automatically provided by Thymeleaf.
+Spring Security handles CSRF automatically. The React app includes the CSRF token in requests like `POST /profile` for secure session-based communication.
 
 **Error Handling:**  
 Custom `error.html` and a global `@ControllerAdvice` handler are implemented to catch OAuth2 and generic exceptions gracefully.
