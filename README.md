@@ -57,7 +57,7 @@ cd oauth2-integration
 ```
 
 ### 🧩 Backend Setup (Spring Boot)
-📦 Install Dependencies
+Install Dependencies
 ```bash
 cd backend
 mvn clean install
@@ -97,7 +97,7 @@ Password: (leave blank)
 ```
 
 ### 💻 Frontend Setup (React + Vite)
-📦 Install Dependencies
+Install Dependencies
 ```bash
 cd ../frontend
 npm install
@@ -140,7 +140,7 @@ Clicking **Logout** ends the session and returns to home with a success message
 
 ---
 
-## Architecture Diagram
+## 🏗️ Architecture Diagram
 ```mermaid
 architecture-beta
     group frontend(cloud)[React Frontend]
