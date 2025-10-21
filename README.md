@@ -4,16 +4,18 @@ A **full-stack web application** that implements secure OAuth2 login using **Goo
 Users can sign in securely, view and edit their profile (Display Name and Bio), and log out safely.  
 
 The project is divided into two parts:
-- 🧩 **Backend** – Spring Boot 3 (OAuth2 + H2 in-memory DB)
-- 💻 **Frontend** – React (Vite) for a modern, responsive UI  
+- 🧩 **Backend** — Spring Boot 3 (OAuth2 + H2 in-memory DB)
+- 💻 **Frontend** — React (Vite) for a modern, responsive UI  
+
 ---
+
 ## 🚀 Features
 
 ### Authentication
 - OAuth2 login via **Google** and **GitHub**
 - Secure session management with Spring Security
-- CSRF protection enabled by default
-- First successful OAuth2 login creates a local `User` and `AuthProvider` record; subsequent logins map to the same user via provider ID/email.
+- CORS protection for cross-origin requests
+- First successful OAuth2 login creates a local `User` and `AuthProvider` record; subsequent logins map to the same user via provider ID/email
 
 ### User Management
 - Authenticated profile page (Display Name, Bio, Avatar, Email)
@@ -34,7 +36,7 @@ The project is divided into two parts:
 | **Frontend** | React (Vite, JavaScript ES6+) |
 | **Backend** | Spring Boot 3 (Java 17+) |
 | **Security** | Spring Security (OAuth2 Client) |
-| **Database** | H2 (in-memory, for development; switchable to MySQL/PostgreSQL for production) |
+| **Database** | H2 (in-memory, for development) |
 | **Build Tools** | Maven (backend), npm (frontend) |
 
 ---
@@ -56,91 +58,148 @@ git clone https://github.com/berna-ahito/oauth2-integration.git
 cd oauth2-integration
 ```
 
+---
+
 ### 🧩 Backend Setup (Spring Boot)
-📦 Install Dependencies
+
+#### 📦 Install Dependencies
 ```bash
 cd backend
 mvn clean install
 ```
 
-### ⚙️ Configure OAuth2 Credentials
-Set the following **environment variables** (via your OS or IntelliJ Run/Debug configuration), or map equivalent values directly in `application.properties`:
-```bash
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
+#### ⚙️ Configure OAuth2 Credentials
+
+**Option 1: Environment Variables (Recommended)**
+
+Set the following environment variables:
+
+**Windows (PowerShell):**
+```powershell
+$env:GOOGLE_CLIENT_ID="your_google_client_id"
+$env:GOOGLE_CLIENT_SECRET="your_google_client_secret"
+$env:GITHUB_CLIENT_ID="your_github_client_id"
+$env:GITHUB_CLIENT_SECRET="your_github_client_secret"
 ```
-Ensure application.properties uses these variables:
+
+**macOS/Linux:**
 ```bash
+export GOOGLE_CLIENT_ID=your_google_client_id
+export GOOGLE_CLIENT_SECRET=your_google_client_secret
+export GITHUB_CLIENT_ID=your_github_client_id
+export GITHUB_CLIENT_SECRET=your_github_client_secret
+```
+
+**Option 2: IntelliJ IDEA**
+1. Go to `Run` → `Edit Configurations`
+2. Select your Spring Boot application
+3. Add environment variables in the `Environment variables` field:
+   ```
+   GOOGLE_CLIENT_ID=your_google_client_id;GOOGLE_CLIENT_SECRET=your_google_client_secret;GITHUB_CLIENT_ID=your_github_client_id;GITHUB_CLIENT_SECRET=your_github_client_secret
+   ```
+
+The `application.properties` file is already configured to use these variables:
+```properties
 spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
 spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
 spring.security.oauth2.client.registration.github.client-id=${GITHUB_CLIENT_ID}
 spring.security.oauth2.client.registration.github.client-secret=${GITHUB_CLIENT_SECRET}
 ```
 
-### 3️⃣ Run the Backend
-```
+#### 🔑 Obtaining OAuth2 Credentials
+
+**Google OAuth2:**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable **Google+ API**
+4. Go to **Credentials** → **Create Credentials** → **OAuth 2.0 Client ID**
+5. Configure consent screen
+6. Set **Authorized redirect URIs**: `http://localhost:8080/login/oauth2/code/google`
+7. Copy **Client ID** and **Client Secret**
+
+**GitHub OAuth2:**
+1. Go to [GitHub Settings](https://github.com/settings/developers)
+2. Click **New OAuth App**
+3. Fill in:
+   - **Application name**: OAuth2 Integration
+   - **Homepage URL**: `http://localhost:8080`
+   - **Authorization callback URL**: `http://localhost:8080/login/oauth2/code/github`
+4. Copy **Client ID** and **Client Secret**
+
+#### 3️⃣ Run the Backend
+```bash
 mvn spring-boot:run
 ```
 
-Then open your browser and go to:
-👉 http://localhost:8080
+Backend will start at: 👉 **http://localhost:8080**
 
-### 4️⃣ Access the H2 Database (optional)
+#### 4️⃣ Access the H2 Database (Optional)
 
-Go to: http://localhost:8080/h2-console
+Go to: **http://localhost:8080/h2-console**
+
 ```
-JDBC URL: jdbc:h2:mem:testdb
+JDBC URL: jdbc:h2:mem:devdb
 Username: sa
 Password: (leave blank)
 ```
 
+---
+
 ### 💻 Frontend Setup (React + Vite)
-📦 Install Dependencies
+
+#### 📦 Install Dependencies
 ```bash
 cd ../frontend
 npm install
 ```
-### ▶️ Run the Frontend
+
+#### ▶️ Run the Frontend
 ```bash
 npm run dev
 ```
-Access the React app at:
-👉 http://localhost:5173
 
-**CORS (development):**  
-The backend enables CORS for `http://localhost:5173` so the Vite React dev server can communicate with the Spring Boot API during development.
+Frontend will start at: 👉 **http://localhost:5173**
 
----
-## 🌐 Backend Endpoints Summary
-
-| HTTP Method | Endpoint | Description | Authentication Required |
-|--------------|-----------|--------------|--------------------------|
-| **GET** | `/` | Displays home page with “Login with Google” and “Login with GitHub” buttons | ❌ No |
-| **GET** | `/profile` | Displays logged-in user's profile (display name, bio, email, avatar) | ✅ Yes |
-| **POST** | `/profile` | Updates user’s display name and bio | ✅ Yes |
-| **GET** | `/logout` | Logs out user and redirects to home page with success message | ❌ No |
-| **GET** | `/h2-console` | Opens the in-memory H2 database console | ❌ No |
-
-✅ = Requires Login  ❌ = Public Access
-
-**Security & CSRF Protection:**  
-Spring Security handles CSRF automatically. The React app includes the CSRF token in requests like `POST /profile` for secure session-based communication.
-
-**Error Handling:**  
-Custom `error.html` and a global `@ControllerAdvice` handler are implemented to catch OAuth2 and generic exceptions gracefully.
-
-## ⏱️ Project Flow
-User visits `/` → sees **Login with Google / GitHub**  
-After authentication → redirected to `/profile`  
-User edits **Display Name** or **Bio** → clicks **Save Changes**  
-Changes persist in the **H2 database**  
-Clicking **Logout** ends the session and returns to home with a success message  
+**CORS Configuration:**  
+The backend enables CORS for `http://localhost:5173` so the Vite dev server can communicate with the Spring Boot API during development.
 
 ---
 
-## Architecture Diagram
+## 🌐 API Endpoints
+
+| HTTP Method | Endpoint | Description | Auth Required |
+|-------------|----------|-------------|---------------|
+| **GET** | `/` | Root endpoint - API status | ❌ No |
+| **GET** | `/api/public/ping` | Health check endpoint | ❌ No |
+| **GET** | `/api/me` | Get current user info | ✅ Yes |
+| **POST** | `/api/profile` | Update user profile (display name, bio) | ✅ Yes |
+| **GET** | `/oauth2/authorization/google` | Initiate Google OAuth2 login | ❌ No |
+| **GET** | `/oauth2/authorization/github` | Initiate GitHub OAuth2 login | ❌ No |
+| **POST** | `/logout` | Log out current user | ✅ Yes |
+| **GET** | `/h2-console/**` | H2 database console (dev only) | ❌ No |
+
+✅ = Requires Login&nbsp;&nbsp;&nbsp;&nbsp;❌ = Public Access
+
+---
+
+## 🎯 User Flow
+
+1. User visits **http://localhost:5173** → sees **Login with Google / GitHub** buttons
+2. User clicks login button → redirected to OAuth2 provider (Google/GitHub)
+3. User authorizes the application
+4. OAuth2 provider redirects back to backend with authorization code
+5. Backend exchanges code for access token
+6. Backend fetches user info from provider
+7. `AppOAuth2UserService` creates/updates `User` and `AuthProvider` records
+8. User is redirected to `/profile` page
+9. User can edit **Display Name** and **Bio** → clicks **Save Changes**
+10. Changes persist in the **H2 database**
+11. User clicks **Logout** → session ends and returns to home
+
+---
+
+## 🏗️ Architecture Diagram
+
 ```mermaid
 architecture-beta
     group frontend(cloud)[React Frontend]
@@ -182,3 +241,31 @@ architecture-beta
     h2db:R -- L:usertbl
     h2db:R -- L:authtbl
 ```
+---
+
+## 🔐 Security Features
+
+- **OAuth2 Authentication**: Industry-standard authentication via Google and GitHub
+- **Session Management**: Secure session cookies with Spring Security
+- **CORS Protection**: Configured to allow requests only from `http://localhost:5173`
+- **CSRF Protection**: Disabled for development (using same-site cookies)
+- **Password-less**: No password storage - authentication handled by OAuth2 providers
+
+---
+
+## 📝 Future Enhancements
+
+- [ ] Switch to persistent database (PostgreSQL/MySQL) for production
+- [ ] Add email verification
+- [ ] Implement role-based access control (RBAC)
+- [ ] Add user profile picture upload
+- [ ] Support for additional OAuth2 providers (Facebook, Twitter, etc.)
+- [ ] Implement refresh token rotation
+- [ ] Add comprehensive error handling and logging
+
+---
+
+
+## ⭐ Show Your Support
+
+Give a ⭐️ if this project helped you!
