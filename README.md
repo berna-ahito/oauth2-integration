@@ -140,23 +140,45 @@ Clicking **Logout** ends the session and returns to home with a success message
 
 ---
 
-## 🧩 High-Level Diagrams
+## Architecture Diagram
+```mermaid
+architecture-beta
+    group frontend(cloud)[React Frontend]
+    group backend(cloud)[Spring Boot Backend]
+    group external(cloud)[External Services]
+    group data(cloud)[Database]
 
-### a) OAuth2 Flow
-```mermaid
-flowchart LR
-  A[User Browser] -->|GET /| B["React Frontend (Login Page)"]
-  B -->|Login with Google/GitHub| C["Spring Security OAuth2 Client"]
-  C -->|Authorization Code Flow| D["Google/GitHub Provider"]
-  D --> C --> E["Spring Security Filter Chain"]
-  E --> F["Authenticated Principal (User)"]
-  F -->|REST API| G["UserController"]
-  G --> H["H2 In-Memory Database"]
-```
-### b) Module / Layer Diagram
-```mermaid
-graph TD
-  FRONT["React Frontend (Vite)"] --> API["Spring Boot REST API"]
-  API --> SEC["Spring Security OAuth2"]
-  API --> DB["H2 Database (In-Memory)"]
+    service react(server)[React App] in frontend
+    
+    service security(server)[SecurityConfig] in backend
+    service oauth2svc(server)[AppOAuth2UserService] in backend
+    service controller(server)[UserController] in backend
+    service userrepo(disk)[UserRepository] in backend
+    service authrepo(disk)[AuthProviderRepository] in backend
+    
+    service google(internet)[Google OAuth2] in external
+    service github(internet)[GitHub OAuth2] in external
+    
+    service h2db(database)[H2 Database] in data
+    service usertbl(disk)[Users Table] in data
+    service authtbl(disk)[AuthProvider Table] in data
+
+    react:B -- T:controller
+    react:B -- T:security
+    
+    security:R -- L:oauth2svc
+    
+    oauth2svc:B -- T:google
+    oauth2svc:B -- T:github
+    
+    oauth2svc:R -- L:userrepo
+    oauth2svc:R -- L:authrepo
+    
+    controller:R -- L:userrepo
+    
+    userrepo:B -- T:h2db
+    authrepo:B -- T:h2db
+    
+    h2db:R -- L:usertbl
+    h2db:R -- L:authtbl
 ```
