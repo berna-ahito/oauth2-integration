@@ -1,6 +1,7 @@
 package ahito.bernadeth.oauth2integration.config;
 
 import ahito.bernadeth.oauth2integration.security.AppOAuth2UserService;
+import ahito.bernadeth.oauth2integration.security.AuthenticationDebugFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,8 +21,16 @@ public class SecurityConfig {
     private static final String FRONTEND = "http://localhost:5173";
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, AppOAuth2UserService appOAuth2UserService) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, AppOAuth2UserService appOAuth2UserService,
+                                    AuthenticationDebugFilter authDebugFilter) throws Exception {
+        System.out.println("🔧 SecurityConfig: Configuring filter chain...");
+        System.out.println("🔧 AppOAuth2UserService instance: " + appOAuth2UserService);
+        System.out.println("🔧 AuthenticationDebugFilter instance: " + authDebugFilter);
+
         http
+                // Add our debug filter
+                .addFilterBefore(authDebugFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+
                 // SPA dev: disable CSRF for now (we're using same-site session cookie)
                 .csrf(csrf -> csrf.disable())
 
@@ -42,14 +51,19 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .oauth2Login(oauth -> oauth
-                        // make sure our user provisioning runs (creates/updates DB user + avatar, etc.)
-                        .userInfoEndpoint(ui -> ui.userService(appOAuth2UserService))
-                        // after successful login, go back to the React profile page
-                        .defaultSuccessUrl(FRONTEND + "/profile", true)
-                        // on failure, land on Home with an error flag
-                        .failureUrl(FRONTEND + "/?error=oauth")
-                )
+                .oauth2Login(oauth -> {
+                    System.out.println("🔧 Configuring OAuth2 login...");
+                    oauth
+                            // make sure our user provisioning runs (creates/updates DB user + avatar, etc.)
+                            .userInfoEndpoint(ui -> {
+                                System.out.println("🔧 Setting custom userService: " + appOAuth2UserService);
+                                ui.userService(appOAuth2UserService);
+                            })
+                            // after successful login, go back to the React profile page
+                            .defaultSuccessUrl(FRONTEND + "/profile", true)
+                            // on failure, land on Home with an error flag
+                            .failureUrl(FRONTEND + "/?error=oauth");
+                })
 
                 .logout(logout -> logout
                         // when logging out, send the browser back to Home with a logout flag
@@ -57,6 +71,7 @@ public class SecurityConfig {
                         .permitAll()
                 );
 
+        System.out.println("✅ SecurityConfig: Filter chain configured successfully");
         return http.build();
     }
 

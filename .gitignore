@@ -9,6 +9,16 @@ build/
 .mvn/wrapper/maven-wrapper.properties
 
 # ----------------------------
+# Frontend (React / Vite)
+# ----------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.DS_Store
+frontend/.eslintcache
+
+# ----------------------------
 # IDE / project files
 # ----------------------------
 # IntelliJ IDEA
@@ -61,16 +71,13 @@ Thumbs.db
 
 # ----------------------------
 # H2 (file mode artifacts)
-# (your app uses in-memory, but ignore just in case)
 # ----------------------------
 *.mv.db
 *.h2.db
 
 # ----------------------------
-# Local env / overrides (optional)
+# Local env / overrides
 # ----------------------------
 *.env
 application-local.properties
 application-local.yml
-
-
